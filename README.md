@@ -1,6 +1,7 @@
-<<<<<<< HEAD
 # CryptoTradeSimulator project
-
+#############################################################################################################
+Cryptocurrency Trading Simulator Game. Developed using Quarkus MicroProfile Implementation and WebComponents.
+#############################################################################################################
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
@@ -31,5 +32,3 @@ You can then execute your native executable with: `./target/CryptoTradeSimulator
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
 =======
 # CryptoTradeSimulator
-Cryptocurrency Trading Simulator Game. Developed using Quarkus MicroProfile Implementation and WebComponents.
->>>>>>> 8be88142317e34f2c02b4e66b15c89b3e1354046
