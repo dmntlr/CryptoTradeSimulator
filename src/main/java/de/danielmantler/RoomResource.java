@@ -68,7 +68,8 @@ public class RoomResource {
 		System.out.println("onError::" + t.getMessage());
 		t.printStackTrace();
 	}
-
+	
+	
 	private static void broadcast(List<GameRoom> rooms) {
     	System.out.println("Broadcasting!");
 		endpoints.forEach(endpoint -> {

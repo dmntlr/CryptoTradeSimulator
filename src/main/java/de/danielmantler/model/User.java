@@ -6,7 +6,6 @@ public class User {
 	
 	final static double STARTING_BALANCE = 100.00;
 	private String username;
-	private int score;
 	private transient Session session;
 	private int roomID;
 	private double balance;
@@ -28,14 +27,6 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
 	}
 
 	public Session getSession() {

@@ -32,7 +32,7 @@ gameTemplate.innerHTML = `
     <input type='text' id='price' readonly></input>
     <label for='amount'>Amount:</label>
     <input type='text' id='amount'></input>
-    <button id='buy' onclick='sendTransaction(this.getElementById('amount'))'>Buy</button>
+    <button id='buy' onclick='sendTransaction(this.getElementById("amount"))'>Buy</button>
     <button class='right' id='sell'>Sell</button>
   </form>
   <form>
