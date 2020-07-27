@@ -36,4 +36,4 @@ pom.xml.versionsBackup
 release.properties
 
 #Authorization
-src/main/test/resources/
+src/test/resources/

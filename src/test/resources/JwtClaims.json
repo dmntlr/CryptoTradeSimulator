@@ -1,6 +1,0 @@
-{
-    "iss": "https://quarkus.io/using-jwt-rbac",
-    "groups": [
-    	"gamer"
-    ]
-}
