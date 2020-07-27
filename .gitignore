@@ -29,11 +29,15 @@ nb-configuration.xml
 *.rej
 
 # Maven
+.mvn
 target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 release.properties
+<<<<<<< HEAD
 
 #Authorization
 src/test/resources/
+=======
+>>>>>>> 2d519c1635e13f562d31b7e874faaf9617a39a3c
