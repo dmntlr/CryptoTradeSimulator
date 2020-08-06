@@ -1,9 +1,10 @@
-package de.daniemantler.service;
+package de.danielmantler.service;
 
 
 import de.danielmantler.model.GameMessage;
 import de.danielmantler.model.GameRoom;
 import de.danielmantler.model.User;
+import de.danielmantler.security.GenerateToken;
 
 public class GameService implements Runnable {
 
@@ -22,10 +23,14 @@ public class GameService implements Runnable {
 	}
 
 	public void broadcastToGameRoom(GameMessage message) {
-		for (User user : room.getUsers()) {
-			message.setBalance(user.getBalance());
+		
+		User[] users = room.getUsers();
+		for (int i = 0; i < users.length; i++) {
+			String token = GenerateToken.generateToken(users[i].getUsername(),users[i].getRoomID(), users[i].getBalance()); 
+			message.setToken(token);
+			message.setBalance(users[i].getBalance());
 			try {
-				user.getSession().getBasicRemote().sendObject(message);
+				users[i].getSession().getBasicRemote().sendObject(message);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

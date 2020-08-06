@@ -6,6 +6,7 @@ public class GameMessage {
 	private String cryptoId;
 	private double cryptoPrice;
 	private double balance;
+	private String token;
 	
 	public GameMessage(String cryptoId, double cryptoPrice) {
 		super();
@@ -36,4 +37,14 @@ public class GameMessage {
 	public double getBalance() {
 		return this.balance;
 	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+	
+	
 }

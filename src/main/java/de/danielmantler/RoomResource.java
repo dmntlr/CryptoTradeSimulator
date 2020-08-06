@@ -16,7 +16,7 @@ import de.danielmantler.model.User;
 import de.danielmantler.serialization.GameMessageEncoder;
 import de.danielmantler.serialization.RoomEncoder;
 import de.danielmantler.serialization.UserDecoder;
-import de.daniemantler.service.RoomService;
+import de.danielmantler.service.RoomService;
 
 
 @ServerEndpoint(value = "/rooms",	

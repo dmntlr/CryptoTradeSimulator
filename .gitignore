@@ -38,6 +38,4 @@ release.properties
 <<<<<<< HEAD
 
 #Authorization
-src/test/resources/
-=======
->>>>>>> 2d519c1635e13f562d31b7e874faaf9617a39a3c
+src/main/resources/privateKey.pem

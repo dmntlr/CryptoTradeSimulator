@@ -1,4 +1,4 @@
-package de.daniemantler.service;
+package de.danielmantler.service;
 
 import java.util.ArrayList;
 import java.util.List;

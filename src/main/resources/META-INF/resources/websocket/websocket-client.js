@@ -26,7 +26,6 @@ function connectToGameRoom() {
 				cryptoGame.crypto = data.cryptoId;
 				cryptoGame.price = data.cryptoPrice;
 				cryptoGame.balance = data.balance;
-				
 				break;
 			default:
 				console.log('Standard from Game Room Server!');

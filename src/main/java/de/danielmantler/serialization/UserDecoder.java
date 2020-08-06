@@ -6,7 +6,6 @@ import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-import de.danielmantler.model.Transaction;
 import de.danielmantler.model.User;
 
 public class UserDecoder implements Decoder.Text<User> {

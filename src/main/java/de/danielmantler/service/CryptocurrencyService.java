@@ -1,4 +1,4 @@
-package de.daniemantler.service;
+package de.danielmantler.service;
 
 import java.net.URI;
 import java.net.http.HttpClient;
