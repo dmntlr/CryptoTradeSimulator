@@ -70,7 +70,7 @@ class CryptoGame extends HTMLElement {
 }
 function sendTransaction(amount) {
 	var json = JSON.stringify({
-		"test" : amount,
+		"amount" : amount,
 	});
 	gameRoomClient.send(json);
 }

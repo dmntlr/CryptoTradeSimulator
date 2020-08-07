@@ -4,11 +4,11 @@ import javax.websocket.Session;
 
 public class User {
 	
-	final static double STARTING_BALANCE = 100.00;
+	final static Double STARTING_BALANCE = 100.00;
 	private String username;
 	private transient Session session;
-	private int roomID;
-	private double balance;
+	private Integer roomID;
+	private Double balance;
 	
 	public User() {
 		this.balance = STARTING_BALANCE;	
@@ -37,18 +37,22 @@ public class User {
 		this.session = session;
 	}
 
-	public int getRoomID() {
+	public Integer getRoomID() {
 		return roomID;
 	}
 
-	public void setRoomID(int roomID) {
+	public void setRoomID(Integer roomID) {
 		this.roomID = roomID;
 	}
-	
-	public double getBalance() {
-		return this.balance;
+
+	public Double getBalance() {
+		return balance;
 	}
-	
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
+
 
 
 	

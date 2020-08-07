@@ -30,7 +30,7 @@ public class TokenUtils {
 	}
 
 	public static String generateTokenString(String jsonResName, Map<String, Long> timeClaims, String user, int roomID,
-			double userBalance) throws Exception {
+			double userBalance, double price, String crypto) throws Exception {
 		PrivateKey privateKey = readPrivateKey(RELATIVE_PATH_PRIVATE_KEY);
 		JwtClaimsBuilder claims = Jwt.claims(jsonResName);
 		long currentTimeInSecs = currentTimeInSecs();
@@ -40,9 +40,11 @@ public class TokenUtils {
 		claims.issuedAt(currentTimeInSecs);
 		claims.claim(Claims.auth_time.name(), currentTimeInSecs);
 		claims.expiresAt(exp);
-		claims.claim("user", user);
-		claims.claim("roomID", roomID);
+		claims.claim("upn", user);
+		claims.claim("room", roomID);
 		claims.claim("balance", userBalance);
+		claims.claim("price", price);
+		claims.claim("crypto",crypto);
 		return claims.jws().signatureKeyId(RELATIVE_PATH_PRIVATE_KEY).sign(privateKey);
 	}
 

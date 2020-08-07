@@ -42,6 +42,15 @@ public class GameRoom {
 		return false;
 	}
 	
+	public User getUser(String username) {
+		for(int i = 0; i < users.length; i++) {
+			if(users[i] != null &&
+					users[i].getUsername().equals(username)) {
+				return users[i];
+			}
+		}
+		return null;
+	}
 	public boolean kickPlayer(User toBeKickedUser) {
 		for(int i=0;i < users.length; i++) {
 			 if(users[i] == toBeKickedUser) {

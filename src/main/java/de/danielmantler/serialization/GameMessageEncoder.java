@@ -9,14 +9,14 @@ import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-import de.danielmantler.model.GameMessage;
+import de.danielmantler.model.TokenMessage;
 
-public class GameMessageEncoder implements Encoder.Text<GameMessage> {
+public class GameMessageEncoder implements Encoder.Text<TokenMessage> {
 	
 	Jsonb jsonb = JsonbBuilder.create();
 
     @Override
-    public String encode(GameMessage message) throws EncodeException {
+    public String encode(TokenMessage message) throws EncodeException {
     	//Add Static class fields to serialziation
         String json = jsonb.toJson(message); 
         return json;
