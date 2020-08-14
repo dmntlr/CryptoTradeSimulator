@@ -85,6 +85,7 @@ function connectToRoom(row) {
 }
 
 function sendRoomCoonection(username,room) {
+	
 	var json = JSON.stringify({
 		"username" : username,
 		"roomID" : room

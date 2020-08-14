@@ -31,7 +31,8 @@ public class TransactionResource {
 	
     @GET
     @Path("/{amount}")
-    public String transaction(@Context SecurityContext ctx, @PathParam Double amount) {
+    public Double transaction(@Context SecurityContext ctx, @PathParam Double amount) {
+    	System.out.println("Called transaction!");
     	Principal caller = ctx.getUserPrincipal();
     	JsonNumber roomNumber = jwt.getClaim("room");
     	GameRoom gameRoom = RoomService.rooms.get(roomNumber.intValue());
@@ -39,10 +40,11 @@ public class TransactionResource {
     	if(gameRoom != null) {
     		user = gameRoom.getUser(caller.getName());
     	} else {
-    		return "Specified GameRoom not found";
+    		return null;
     	}
   
     	if(user != null) {
+    		System.out.println("User " + user.getUsername() + " asked for a transaction!");
     		//Calculate Price
     		JsonNumber price = jwt.getClaim("price");
     		Double cost = amount * price.doubleValue();
@@ -54,10 +56,10 @@ public class TransactionResource {
     				(user.getBalance() - cost) >= 0) {
     			user.setBalance(user.getBalance() - cost);
     		}
-    		
     	} else {
-        	return "Specified User not found";
+        	return null;
     	}
-    	return "NEW TOKEN?";
+    	
+    	return user.getBalance();
     }
 }

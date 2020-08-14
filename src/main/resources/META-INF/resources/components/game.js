@@ -1,5 +1,5 @@
 const gameTemplate = document.createElement('template');
- 
+
 gameTemplate.innerHTML = `
   <style>
     div {
@@ -32,7 +32,7 @@ gameTemplate.innerHTML = `
     <input type='text' id='price' readonly></input>
     <label for='amount'>Amount:</label>
     <input type='text' id='amount'></input>
-    <button id='buy' onclick='sendTransaction(this.getElementById("amount"))'>Buy</button>
+    <button type='button' id='buy'>Buy</button>
     <button class='right' id='sell'>Sell</button>
   </form>
   <form>
@@ -48,18 +48,23 @@ gameTemplate.innerHTML = `
 </form>
 </div>
 `;
- 
+
 class CryptoGame extends HTMLElement {
   constructor() {
     super();
     this._shadowRoot = this.attachShadow({ mode: 'open' });
     this._shadowRoot.appendChild(gameTemplate.content.cloneNode(true));
+
+    this.buyButton = this.shadowRoot.getElementById('buy');
+    this.amount = this.shadowRoot.getElementById('amount');
+    this.sendTransaction = this.sendTransaction.bind(this);
+
   }
 
   set balance(balance) {
-	 this.shadowRoot.querySelector('#balance').value = balance + '$';
+    this.shadowRoot.querySelector('#balance').value = balance + '$';
   }
-  
+
   set crypto(crypto) {
     this.shadowRoot.querySelector('#crypto').value = crypto;
   }
@@ -67,11 +72,25 @@ class CryptoGame extends HTMLElement {
   set price(price) {
     this.shadowRoot.querySelector('#price').value = price;
   }
-}
-function sendTransaction(amount) {
-	var json = JSON.stringify({
-		"amount" : amount,
-	});
-	gameRoomClient.send(json);
+
+  connectedCallback() {
+    this.buyButton.addEventListener('click', this.sendTransaction);
+  }
+
+  sendTransaction() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer " + getCookie('jwt'));
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
+
+    fetch("http://localhost:8080/transaction/" + this.amount.value, requestOptions)
+      .then(response => response.text())
+      .then(result => this.balance = result)
+      .catch(error => console.log('error', error));
+  }
+
 }
 window.customElements.define('crypto-game', CryptoGame);
