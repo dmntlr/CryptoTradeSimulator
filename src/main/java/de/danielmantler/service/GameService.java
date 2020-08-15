@@ -1,8 +1,12 @@
 package de.danielmantler.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 import de.danielmantler.model.CryptoPrices;
+import de.danielmantler.model.EndgameMessage;
 import de.danielmantler.model.GameRoom;
 import de.danielmantler.model.TokenMessage;
 import de.danielmantler.model.User;
@@ -11,15 +15,17 @@ import de.danielmantler.security.GenerateToken;
 public class GameService implements Runnable {
 
 	private GameRoom room;
-
+	volatile boolean stop;
 	private static int TIME_TO_NEW_MESSAGE = 2 * 60 * 1000;
 	private static final int GAME_DAYS = 5;
 	int priceListIndex = 0;
 	private CryptoPrices cryptoPrices;
+	private User[] users;
 
 	public GameService(GameRoom room) {
 		this.room = room;
 		this.cryptoPrices = CryptocurrencyService.getCurrentPrice(room.getCrypto(), GAME_DAYS);
+		this.users = room.getUsers();
 	}
 
 	public GameRoom getRoom() {
@@ -30,10 +36,11 @@ public class GameService implements Runnable {
 		this.room = room;
 	}
 
-	public void broadcastToGameRoom() {
+	public void setStop(boolean stop) {
+		this.stop = stop;
+	}
 
-		User[] users = room.getUsers();
-
+	public void broadcastGameUpdate() {
 		Double price = getCurrentPrice();
 
 		for (int i = 0; i < users.length; i++) {
@@ -47,10 +54,11 @@ public class GameService implements Runnable {
 			}
 		}
 		resetTransacted();
+		checkGameStatus();
 	}
 
 	public boolean isTransacted() {
-		for(User user : room.getUsers()) {
+		for (User user : room.getUsers()) {
 			if (user.isTransacted() == false) {
 				return false;
 			}
@@ -58,36 +66,55 @@ public class GameService implements Runnable {
 		return true;
 	}
 
+	// TODO-> Should return a ranking in the future and use stream for sending the message directly.
+	public void broadcastWinning() {
+		User winner = Arrays.stream(users).max(Comparator.comparingDouble(User::getBalance))
+				.orElseThrow(NoSuchElementException::new);
+
+		for (User user : users) {
+			try {
+				if (user == winner) {
+					user.getSession().getBasicRemote().sendObject(new EndgameMessage(true));
+				} else {
+					user.getSession().getBasicRemote().sendObject(new EndgameMessage(false));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public void resetTransacted() {
-		for(User user: room.getUsers()) {
+		for (User user : room.getUsers()) {
 			user.setTransacted(false);
 		}
 	}
-	
-	public void finishGame() {
-		//TODO-> Implement
+
+	public void checkGameStatus() {
+		if (priceListIndex > cryptoPrices.getPrices().size()) {
+			RoomService.finishGame(this);
+		}
 	}
-	
+
 	public Double getCurrentPrice() {
 		ArrayList<ArrayList<Number>> pricesList = cryptoPrices.getPrices();
 		Double price = pricesList.get(priceListIndex).get(1).doubleValue();
 		priceListIndex += (pricesList.size() / GAME_DAYS) - 1;
-		if(priceListIndex > pricesList.size()) {
-			finishGame();
-		}
 		return price;
 	}
 
 	@Override
 	public void run() {
-		broadcastToGameRoom();
-		while (true) {
+		broadcastGameUpdate();
+		while (!stop) {
 			try {
 				Thread.sleep(TIME_TO_NEW_MESSAGE);
+				broadcastGameUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 		}
 	}
+
 }

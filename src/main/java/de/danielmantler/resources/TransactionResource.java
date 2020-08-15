@@ -61,7 +61,7 @@ public class TransactionResource {
     		}
     		
     		if(gameRoom.getGameService().isTransacted() == true) {
-    			gameRoom.getGameService().broadcastToGameRoom();
+    			gameRoom.getGameService().broadcastGameUpdate();
     		}
     		
     	} else {

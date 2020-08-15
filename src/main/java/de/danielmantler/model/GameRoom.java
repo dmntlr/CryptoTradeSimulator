@@ -30,6 +30,10 @@ public class GameRoom {
 
 	}
 
+	public void setUsers(User[] users) {
+		this.users = users;
+	}
+
 	public boolean containsUser(User user) {
 		for (int i = 0; i < users.length; i++) {
 			if (users[i] != null && users[i].getSession().getId().equals(user.getSession().getId())) {
@@ -73,7 +77,10 @@ public class GameRoom {
 		return this.crypto;
 	}
 
-
+	public void reset() {
+		this.users = new User[2];
+		this.gameService = null;
+	}
 
 	public GameService getGameService() {
 		return gameService;

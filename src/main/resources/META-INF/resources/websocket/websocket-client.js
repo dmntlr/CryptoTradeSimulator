@@ -2,7 +2,7 @@ var gameRoomClient;
 var serverList = document.createElement('server-list');
 var host = document.location.host;
 var pathname = document.location.pathname;
-
+var cryptoGame;
 document.body.appendChild(serverList);
 
 function connectToGameRoom() {
@@ -16,12 +16,11 @@ function connectToGameRoom() {
 		console.log(data);
 		switch (data.MESSAGE_TYPE) {
 			case 'GAME_MESSAGE':
-				sessionStorage.setItem('jwt',data.token)
+				sessionStorage.setItem('jwt', data.token)
 				data = parseJwt(data.token);
 				console.log(data);
-				var cryptoGame = document.getElementById('cryptoGame');
-				if (cryptoGame == null) {
-					var cryptoGame = document.createElement('crypto-game');
+				if (document.getElementById('cryptoGame') == null) {
+					cryptoGame = document.createElement('crypto-game');
 					document.body.appendChild(cryptoGame);
 				}
 				cryptoGame.setAttribute('id', 'cryptoGame');
@@ -29,6 +28,14 @@ function connectToGameRoom() {
 				cryptoGame.price = data.price;
 				cryptoGame.balance = data.balance;
 				cryptoGame.amountBalance = data.amount;
+				break;
+			case 'ENDGAME_MESSAGE':
+				if (data.winner == true) {
+					alert('You won the game congratulations!');
+				} else if (data.winner == false) {
+					alert('Sorry you lost. Better luck next time.')
+				}
+				cryptoGame.parentNode.removeChild(cryptoGame);
 				break;
 			default:
 				console.log('Standard from Game Room Server!');
@@ -39,13 +46,13 @@ function connectToGameRoom() {
 	};
 }
 
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+function parseJwt(token) {
+	var base64Url = token.split('.')[1];
+	var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+	var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+		return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+	}).join(''));
 
-    return JSON.parse(jsonPayload);
+	return JSON.parse(jsonPayload);
 };
 

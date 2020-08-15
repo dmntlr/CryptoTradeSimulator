@@ -1,5 +1,6 @@
 package de.danielmantler.resources;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -12,13 +13,14 @@ import javax.websocket.server.ServerEndpoint;
 import de.danielmantler.model.GameRoom;
 import de.danielmantler.model.User;
 import de.danielmantler.serialization.GameMessageEncoder;
+import de.danielmantler.serialization.EndgameMessageEncoder;
 import de.danielmantler.serialization.RoomEncoder;
 import de.danielmantler.serialization.UserDecoder;
 import de.danielmantler.service.RoomService;
 
 
 @ServerEndpoint(value = "/rooms",	
-				encoders = { RoomEncoder.class, GameMessageEncoder.class },
+				encoders = { RoomEncoder.class, GameMessageEncoder.class, EndgameMessageEncoder.class },
 				decoders = UserDecoder.class)
 public class RoomResource {
 	private Session session;
@@ -41,16 +43,10 @@ public class RoomResource {
 
 	@OnClose
 	public void onClose(Session session) {
-		try {
 			if(session != null) {
 				endpoints.remove(this);
-				RoomService.findRoomAndKick(session);
-				session.close();
+				kickSession(session);
 			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	@OnMessage
@@ -58,17 +54,26 @@ public class RoomResource {
 			user.setSession(session);
 			System.out.println(RoomService.add(user));
 			broadcast(RoomService.rooms);
-		
 	}
 	
 	@OnError
-	public void onError(Throwable t) {
+	public void onError(Session session, Throwable t) {
 		System.out.println("onError::" + t.getMessage());
 		t.printStackTrace();
+		kickSession(session);
+		}
+
+	public void kickSession(Session session) {
+		try {
+			System.out.println("Kicking player with session: " + session.getId());
+			RoomService.findRoomAndKick(session);
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	
-	private static void broadcast(List<GameRoom> rooms) {
+	public static void broadcast(List<GameRoom> rooms) {
     	System.out.println("Broadcasting!");
 		endpoints.forEach(endpoint -> {
 			synchronized (endpoint) {

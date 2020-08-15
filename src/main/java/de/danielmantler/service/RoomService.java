@@ -2,11 +2,10 @@ package de.danielmantler.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.websocket.Session;
-
 import de.danielmantler.model.GameRoom;
 import de.danielmantler.model.User;
+import de.danielmantler.resources.RoomResource;
 
 public class RoomService implements Runnable {
     
@@ -15,6 +14,7 @@ public class RoomService implements Runnable {
 	
     private static RoomService instance;
     public static List<GameRoom> rooms;
+    
     private RoomService() {}
     
     public static String add(User user) throws Exception {
@@ -27,7 +27,8 @@ public class RoomService implements Runnable {
         			== gameRoom.getUsers().length) {
         		GameService gameService = new GameService(gameRoom);
         		gameRoom.setGameService(gameService);
-        		new Thread(gameService).start();
+        		Thread game = new Thread(gameService);
+				game.start();
         	}
     	}
     	return "Connected user + " + user.getUsername() + " to room " + user.getRoomID();
@@ -50,10 +51,9 @@ public class RoomService implements Runnable {
     }
 
     public static boolean findRoomAndKick(Session session) {
-    	//TODO -> Get room directly be session
     		for(GameRoom room : rooms) {
     			for(User user : room.getUsers()) {
-    				if(user.getSession() == session) {
+    				if(user != null && user.getSession() == session) {
     					room.kickPlayer(user);
     					return true;
     				}
@@ -62,6 +62,14 @@ public class RoomService implements Runnable {
     		return false;
     }
     
+    
+   public static void finishGame(GameService service) {
+	 service.setStop(true);
+	 service.getRoom().reset();
+	 service.broadcastWinning();
+	 RoomResource.broadcast(rooms);
+   }
+   
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
