@@ -44,6 +44,7 @@ public class TransactionResource {
     	}
   
     	if(user != null) {
+    		Double proposedAmount = user.getAmount() + amount;
     		System.out.println("User " + user.getUsername() + " asked for a transaction!");
     		//Calculate Price
     		JsonNumber price = jwt.getClaim("price");
@@ -52,9 +53,11 @@ public class TransactionResource {
     		//Check if Balance is correct
     		JsonNumber balance = jwt.getClaim("balance");
     		
-    		if(balance.doubleValue() == user.getBalance() && (user.getBalance() - cost) >= 0) {
+    		if(balance.doubleValue() == user.getBalance() && (user.getBalance() - cost) >= 0
+    				&& proposedAmount >= 0) {
     			user.setBalance(user.getBalance() - cost);	
     			user.setTransacted(true);
+    			user.setAmount(proposedAmount);
     		}
     		
     		if(gameRoom.getGameService().isTransacted() == true) {

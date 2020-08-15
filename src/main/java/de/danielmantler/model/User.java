@@ -9,16 +9,17 @@ public class User {
 	private transient Session session;
 	private Integer roomID;
 	private Double balance;
+	private Double amount;
 	private boolean isTransacted;
 	
 	public User() {
-		this.balance = STARTING_BALANCE;	
+		this.balance = STARTING_BALANCE;
+		this.amount = 0.0;
 	}
 
 	public User(String username) {
 		super();
 		this.username = username;
-		this.balance = STARTING_BALANCE;
 	}
 
 	public String getUsername() {
@@ -59,6 +60,14 @@ public class User {
 
 	public void setTransacted(boolean isTransacted) {
 		this.isTransacted = isTransacted;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 
 

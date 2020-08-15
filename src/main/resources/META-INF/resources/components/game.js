@@ -33,11 +33,13 @@ gameTemplate.innerHTML = `
     <label for='amount'>Amount:</label>
     <input type='text' id='amount'></input>
     <button type='button' id='buy'>Buy</button>
-    <button class='right' id='sell'>Sell</button>
+    <button type='button' class='right' id='sell'>Sell</button>
   </form>
   <form>
   <label for='balance'>Balance:</label>
-  <input type='text' id='balance' readonly>
+  <input type='text' id='balance' readonly/>
+  <label for='amountBalance'>Amount:</label>
+  <input type='text' id='amountBalance' readonly/>
   <table id='transactions'>
     <tr>
       <th>ID</th>
@@ -56,8 +58,10 @@ class CryptoGame extends HTMLElement {
     this._shadowRoot.appendChild(gameTemplate.content.cloneNode(true));
 
     this.buyButton = this.shadowRoot.getElementById('buy');
+    this.sellButton = this.shadowRoot.getElementById('sell');
     this.amount = this.shadowRoot.getElementById('amount');
-    this.sendTransaction = this.sendTransaction.bind(this);
+    this.buy = this.buy.bind(this);
+    this.sell = this.sell.bind(this);
 
   }
 
@@ -68,16 +72,30 @@ class CryptoGame extends HTMLElement {
   set crypto(crypto) {
     this.shadowRoot.querySelector('#crypto').value = crypto;
   }
+  set amountBalance(amount) {
+    this.shadowRoot.querySelector('#amountBalance').value = amount;
+  }
+
 
   set price(price) {
     this.shadowRoot.querySelector('#price').value = price;
   }
 
   connectedCallback() {
-    this.buyButton.addEventListener('click', this.sendTransaction);
+    this.buyButton.addEventListener('click', this.buy);
+    this.sellButton.addEventListener('click',this.sell);
   }
 
-  sendTransaction() {
+  buy() {
+    this.sendTransaction(this.amount.value);
+  }
+
+
+  sell() {
+    this.sendTransaction(-this.amount.value);
+  }
+
+  sendTransaction(amount) {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem('jwt'));
 
@@ -86,7 +104,7 @@ class CryptoGame extends HTMLElement {
       headers: myHeaders,
     };
 
-    fetch("http://localhost:8080/transaction/" + this.amount.value, requestOptions)
+    fetch("http://localhost:8080/transaction/" + amount, requestOptions)
       .then(response => response.text())
       .then(result => this.balance = result)
       .catch(error => console.log('error', error));

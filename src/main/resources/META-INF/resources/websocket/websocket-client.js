@@ -28,6 +28,7 @@ function connectToGameRoom() {
 				cryptoGame.crypto = data.crypto;
 				cryptoGame.price = data.price;
 				cryptoGame.balance = data.balance;
+				cryptoGame.amountBalance = data.amount;
 				break;
 			default:
 				console.log('Standard from Game Room Server!');
@@ -47,3 +48,4 @@ function parseJwt (token) {
 
     return JSON.parse(jsonPayload);
 };
+
