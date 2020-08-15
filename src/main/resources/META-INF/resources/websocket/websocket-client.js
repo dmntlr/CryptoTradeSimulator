@@ -12,11 +12,11 @@ function connectToGameRoom() {
 	gameRoomClient.onmessage = function (event) {
 		console.log("On Message called!");
 		var data = JSON.parse(event.data);
-		console.log('Data parsed');
+		console.log('Data parsed')
 		console.log(data);
 		switch (data.MESSAGE_TYPE) {
 			case 'GAME_MESSAGE':
-				document.cookie = "jwt=" + data.token;
+				sessionStorage.setItem('jwt',data.token)
 				data = parseJwt(data.token);
 				console.log(data);
 				var cryptoGame = document.getElementById('cryptoGame');
@@ -38,33 +38,12 @@ function connectToGameRoom() {
 	};
 }
 
-function getCookie(name) {
-	var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-	if (match) return match[2];
-}
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
 
-function parseJwt(token) {
-	var base64Url = token.split('.')[1];
-	var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-	var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-		return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-	}).join(''));
-
-	return JSON.parse(jsonPayload);
+    return JSON.parse(jsonPayload);
 };
-
-function getCookie(cname) {
-	var name = cname + "=";
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for(var i = 0; i <ca.length; i++) {
-	  var c = ca[i];
-	  while (c.charAt(0) == ' ') {
-		c = c.substring(1);
-	  }
-	  if (c.indexOf(name) == 0) {
-		return c.substring(name.length, c.length);
-	  }
-	}
-	return "";
-  }

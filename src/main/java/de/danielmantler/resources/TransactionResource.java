@@ -1,16 +1,17 @@
-package de.danielmantler;
+package de.danielmantler.resources;
 
 import java.security.Principal;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonNumber;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
@@ -28,17 +29,16 @@ public class TransactionResource {
 	@Inject
 	JsonWebToken jwt;
 	
-	
     @GET
     @Path("/{amount}")
     public Double transaction(@Context SecurityContext ctx, @PathParam Double amount) {
-    	System.out.println("Called transaction!");
-    	Principal caller = ctx.getUserPrincipal();
+    	Principal principal = ctx.getUserPrincipal();
+    	System.out.println(principal.getName() + "Called transaction!");
     	JsonNumber roomNumber = jwt.getClaim("room");
     	GameRoom gameRoom = RoomService.rooms.get(roomNumber.intValue());
     	User user = null;
     	if(gameRoom != null) {
-    		user = gameRoom.getUser(caller.getName());
+    		user = gameRoom.getUser(principal.getName());
     	} else {
     		return null;
     	}
@@ -52,10 +52,15 @@ public class TransactionResource {
     		//Check if Balance is correct
     		JsonNumber balance = jwt.getClaim("balance");
     		
-    		if(balance.doubleValue() == user.getBalance() &&
-    				(user.getBalance() - cost) >= 0) {
-    			user.setBalance(user.getBalance() - cost);
+    		if(balance.doubleValue() == user.getBalance() && (user.getBalance() - cost) >= 0) {
+    			user.setBalance(user.getBalance() - cost);	
+    			user.setTransacted(true);
     		}
+    		
+    		if(gameRoom.getGameService().isTransacted() == true) {
+    			gameRoom.getGameService().broadcastToGameRoom();
+    		}
+    		
     	} else {
         	return null;
     	}

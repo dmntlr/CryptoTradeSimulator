@@ -9,6 +9,7 @@ import de.danielmantler.security.GenerateToken;
 public class GameService implements Runnable {
 
 	private GameRoom room;
+	private static int TIME_TO_NEW_MESSAGE = 2 * 60 * 1000;
 
 	public GameService(GameRoom room) {
 		this.room = room;
@@ -27,7 +28,7 @@ public class GameService implements Runnable {
 		User[] users = room.getUsers();
 		for (int i = 0; i < users.length; i++) {
 			String token = GenerateToken.generateToken(
-					room.getCrypto(),users[i].getUsername(),users[i].getRoomID(), users[i].getBalance(),CryptocurrencyService.getCurrentPrice(room.getCrypto())); 
+					room.getCrypto(),users[i].getUsername(),users[i].getRoomID(), users[i].getBalance(),CryptocurrencyService.getCurrentPrice(room.getCrypto()),TIME_TO_NEW_MESSAGE); 
 			TokenMessage message = new TokenMessage(token);
 			try {
 				users[i].getSession().getBasicRemote().sendObject(message);
@@ -37,12 +38,21 @@ public class GameService implements Runnable {
 		}
 	}
 
+	public boolean isTransacted() {
+		for (User user : room.getUsers()) {
+			if (user.isTransacted() == false) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public void run() {
-		broadcastToGameRoom();
 		while (true) {
 			try {
-				Thread.sleep(60 * 1000);
+				broadcastToGameRoom();	
+				Thread.sleep(TIME_TO_NEW_MESSAGE);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

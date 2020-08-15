@@ -79,7 +79,7 @@ class CryptoGame extends HTMLElement {
 
   sendTransaction() {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + getCookie('jwt'));
+    myHeaders.append("Authorization", "Bearer " + sessionStorage.getItem('jwt'));
 
     var requestOptions = {
       method: 'GET',

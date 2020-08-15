@@ -1,4 +1,4 @@
-package de.danielmantler;
+package de.danielmantler.resources;
 
 import java.io.IOException;
 import java.util.List;

@@ -26,6 +26,7 @@ public class RoomService implements Runnable {
         	if(gameRoom.getUserCount()
         			== gameRoom.getUsers().length) {
         		GameService gameService = new GameService(gameRoom);
+        		gameRoom.setGameService(gameService);
         		new Thread(gameService).start();
         	}
     	}
