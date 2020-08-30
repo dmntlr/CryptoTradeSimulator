@@ -31,7 +31,7 @@ public class TransactionResource {
 	
     @GET
     @Path("/{amount}")
-    public Double transaction(@Context SecurityContext ctx, @PathParam Double amount) {
+    public String transaction(@Context SecurityContext ctx, @PathParam Double amount) {
     	Principal principal = ctx.getUserPrincipal();
     	System.out.println(principal.getName() + "Called transaction!");
     	JsonNumber roomNumber = jwt.getClaim("room");
@@ -67,7 +67,11 @@ public class TransactionResource {
     	} else {
         	return null;
     	}
+    	String jsonResponse = "{ \"balance\" : " + user.getBalance() +
+    			", \"amount\" : " + user.getAmount() + 
+    			", \"transacted\" : " + user.isTransacted() + "}" ;
     	
-    	return user.getBalance();
+    	System.out.println(jsonResponse);
+    	return jsonResponse;
     }
 }

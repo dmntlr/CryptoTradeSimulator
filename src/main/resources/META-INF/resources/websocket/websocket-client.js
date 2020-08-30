@@ -28,6 +28,8 @@ function connectToGameRoom() {
 				cryptoGame.price = data.price;
 				cryptoGame.balance = data.balance;
 				cryptoGame.amountBalance = data.amount;
+				cryptoGame.status = false;
+				cryptoGame.round = data.round + '/' + data.maxRounds;
 				break;
 			case 'ENDGAME_MESSAGE':
 				if (data.winner == true) {

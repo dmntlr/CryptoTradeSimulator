@@ -9,7 +9,7 @@ public class GenerateToken {
 	private static String RELATIVE_PATH_STANDARD_CLAIMS = "/JwtClaims.json";
 
 	public static String generateToken(String crypto, String user, int roomID, double userBalance, double price,
-			double amount) {
+			double amount, int round, int maxRounds) {
 
 		HashMap<String, Long> timeClaims = new HashMap<>();
 
@@ -19,7 +19,7 @@ public class GenerateToken {
 		String token = "";
 		try {
 			token = TokenUtils.generateTokenString(RELATIVE_PATH_STANDARD_CLAIMS, timeClaims, user, roomID, userBalance,
-					price, crypto, amount);
+					price, crypto, amount, round, maxRounds);
 		} catch (Exception e) {
 			System.out.println("Error while generating Token!");
 			e.printStackTrace();

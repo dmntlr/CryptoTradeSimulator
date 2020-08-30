@@ -6,11 +6,19 @@ gameTemplate.innerHTML = `
       padding: 8px;
       width: 200px;
     }
-
+	
     input {
       width : 100%;
     }
     
+	.confirmed {
+		color : green;
+	}
+	
+	.unconfirmed {
+		color : red;	
+	}
+	
     button {
     	width : 94px;
     }
@@ -36,6 +44,10 @@ gameTemplate.innerHTML = `
     <button type='button' class='right' id='sell'>Sell</button>
   </form>
   <form>
+  <label for='status'>Status:</label>
+  <input type='text' id='status' readonly/>
+  <label for='round'>Round:</label>
+  <input type='text' id='round' readonly/>
   <label for='balance'>Balance:</label>
   <input type='text' id='balance' readonly/>
   <label for='amountBalance'>Amount:</label>
@@ -76,10 +88,26 @@ class CryptoGame extends HTMLElement {
     this.shadowRoot.querySelector('#amountBalance').value = amount;
   }
 
-
   set price(price) {
     this.shadowRoot.querySelector('#price').value = price;
   }
+
+ set round(round) {
+    this.shadowRoot.querySelector('#round').value = round;
+}
+
+ set status(status) {
+	var statusField = this.shadowRoot.querySelector('#status');
+	if(status == true) {
+		  statusField.value = 'Waiting for next Round.'
+		  statusField.className = 'confirmed';
+	} else if (status == false) {
+		statusField.value = 'No transaction yet.'
+		statusField.className = 'unconfirmed';
+	}
+  
+}
+	
 
   connectedCallback() {
     this.buyButton.addEventListener('click', this.buy);
@@ -105,9 +133,16 @@ class CryptoGame extends HTMLElement {
     };
 
     fetch("http://localhost:8080/transaction/" + amount, requestOptions)
-      .then(response => response.text())
-      .then(result => this.balance = result)
-      .catch(error => console.log('error', error));
+      .then(result => result.json())
+		.then(data =>  {
+			this.balance = data.balance;
+			this.amountBalance = data.amount;
+			this.status = data.transacted;
+			console.log(data);
+		})
+      .catch(error =>  {
+		console.log('error', error)
+	});
   }
 
 }

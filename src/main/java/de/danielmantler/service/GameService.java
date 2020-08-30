@@ -16,9 +16,10 @@ public class GameService implements Runnable {
 
 	private GameRoom room;
 	volatile boolean stop;
-	private static int TIME_TO_NEW_MESSAGE = 2 * 60 * 1000;
+	private static final int TIME_TO_NEW_MESSAGE = 2 * 60 * 1000;
 	private static final int GAME_DAYS = 5;
 	int priceListIndex = 0;
+	int round = 1;
 	private CryptoPrices cryptoPrices;
 	private User[] users;
 
@@ -45,7 +46,7 @@ public class GameService implements Runnable {
 
 		for (int i = 0; i < users.length; i++) {
 			String token = GenerateToken.generateToken(room.getCrypto(), users[i].getUsername(), users[i].getRoomID(),
-					users[i].getBalance(), price, users[i].getAmount());
+					users[i].getBalance(), price, users[i].getAmount(), round, GAME_DAYS);
 			TokenMessage message = new TokenMessage(token);
 			try {
 				users[i].getSession().getBasicRemote().sendObject(message);
@@ -53,6 +54,7 @@ public class GameService implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		round++;
 		resetTransacted();
 		checkGameStatus();
 	}
@@ -91,7 +93,7 @@ public class GameService implements Runnable {
 	}
 
 	public void checkGameStatus() {
-		if (priceListIndex > cryptoPrices.getPrices().size()) {
+		if (round - 1 > GAME_DAYS) {
 			RoomService.finishGame(this);
 		}
 	}

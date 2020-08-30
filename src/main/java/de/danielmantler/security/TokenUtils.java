@@ -25,7 +25,7 @@ public class TokenUtils {
 	}
 
 	public static String generateTokenString(String jsonResName, Map<String, Long> timeClaims, String user, int roomID,
-			double userBalance, double price, String crypto, double amount) throws Exception {
+			double userBalance, double price, String crypto, double amount, int round, int maxRounds) throws Exception {
 		PrivateKey privateKey = readPrivateKey(RELATIVE_PATH_PRIVATE_KEY);
 		JwtClaimsBuilder claims = Jwt.claims(jsonResName);
 		long currentTimeInSecs = currentTimeInSecs();
@@ -41,6 +41,8 @@ public class TokenUtils {
 		claims.claim("price", price);
 		claims.claim("crypto",crypto);
 		claims.claim("amount", amount);
+		claims.claim("round", round);
+		claims.claim("maxRounds",maxRounds);
 		return claims.jws().signatureKeyId(RELATIVE_PATH_PRIVATE_KEY).sign(privateKey);
 	}
 
