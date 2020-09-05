@@ -6,7 +6,6 @@ public class EndgameMessage {
 	public Type MESSAGE_TYPE = Type.ENDGAME_MESSAGE;
 	
 	public EndgameMessage() {
-		
 	}
 	
 	public EndgameMessage(boolean isWinner) {

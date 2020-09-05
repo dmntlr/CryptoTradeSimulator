@@ -8,8 +8,10 @@ public class CryptoPrices {
 	private ArrayList<ArrayList<Number>> prices;
 
 	public CryptoPrices() {
-
+	
 	}
+
+
 
 	public ArrayList<ArrayList<Number>> getPrices() {
 		return prices;
@@ -18,15 +20,5 @@ public class CryptoPrices {
 	public void setPrices(ArrayList<ArrayList<Number>> prices) {
 		this.prices = prices;
 	}
-
-
-
-
-
-
-
-	
-	
-	
 
 }
